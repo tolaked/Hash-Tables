@@ -26,13 +26,21 @@ class HashTable:
         return hash(key)
 
 
-    def _hash_djb2(self, key):
+    def _hash_djb2(self, key, value):
         '''
         Hash an arbitrary key using DJB2 hash
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is None:
+            self.storage[index] = LinkedPair(key,value)
+        else:
+            place = self.storage[index]
+            while place.next is not None:
+                place =self.storage[index].next
+            place = place.next
+
 
 
     def _hash_mod(self, key):
