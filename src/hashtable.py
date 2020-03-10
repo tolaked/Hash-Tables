@@ -26,21 +26,13 @@ class HashTable:
         return hash(key)
 
 
-    def _hash_djb2(self, key, value):
+    def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        index = self._hash_mod(key)
-        if self.storage[index] is None:
-            self.storage[index] = LinkedPair(key,value)
-        else:
-            place = self.storage[index]
-            while place.next is not None:
-                place =self.storage[index].next
-            place = place.next
-
+        pass
 
 
     def _hash_mod(self, key):
@@ -59,8 +51,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        index = self._hash_mod(key)
+        curr_ele = self.storage[index]
+        while curr_ele is not None and curr_ele.key is not key:
+            curr_ele = curr_ele.next
+        new_ele = LinkedPair(key,value)
+        new_ele.next = self.storage[index]
+        self.storage[index] = new_ele
+       
+       
 
 
     def remove(self, key):
@@ -71,7 +70,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current = self.storage[index]
+        prev = None
+        while current and current.key != key:
+            current = current.next
+        if current is None:
+            print("key not found")
+        elif prev is None:
+                self.storage[index] = current.next
+        else:
+            prev.next = current.next
 
 
     def retrieve(self, key):
@@ -80,9 +89,16 @@ class HashTable:
 
         Returns None if the key is not found.
 
-        Fill this in.
+        Fill this in.i thought i
         '''
-        pass
+        index = self._hash_mod(key)
+        place = self.storage[index]
+        while place is not None:
+            if place.key == key:
+                return place.value
+            else:
+                place = place.next
+        return None
 
 
     def resize(self):
@@ -92,8 +108,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_storage = HashTable(self.capacity)
 
+        for item in self.storage:
+            current = item
+            while current:
+                new_storage.insert(current.key, current.value)
+                current = current.next
+        self.storage = new_storage.storage
 
 
 if __name__ == "__main__":
